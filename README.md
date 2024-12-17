@@ -7,7 +7,7 @@
 
 
 1. Using the pre-compiled Windows EXE.
-2. Go to the [Releases Tab](https://www.example.com)
+2. Go to the [Releases Tab](https://github.com/NoOneIsHereFr/ProcessSigma/releases)
 
 
 [^1]: i hope you should know what python is. Used libs are: pystray, PIL, psutil, os, time, threading, keyboard, win32
