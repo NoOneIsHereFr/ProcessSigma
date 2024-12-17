@@ -13,8 +13,8 @@
 ## COMPILE YOURSELF (for sigma[^2] people):
 1. Clone this repo
 2. Go to the directory of main.py
-3. Run this: `pyinstaller --noconfirm --onefile --windowed --icon "sigmaprc.ico" main.py
-move ./dlist/main.exe ./`. If not working enter the full path of pyinstaller
+3. Run this: `pyinstaller --noconfirm --onefile --windowed --icon "sigmaprc.ico" main.py`. If not working enter the full path of pyinstaller
+4. Run this: `move ./dlist/main.exe ./`
 
 [^1]: i hope you should know what python is. Used libs are: pystray, PIL, psutil, os, time, threading, keyboard, win32
 [^2]: just some lil brainrot
