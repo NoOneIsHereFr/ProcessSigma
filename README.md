@@ -7,7 +7,7 @@
 
 ## PRE-COMPILED EXE FOR WINDOWS (for not sigma people):
 1. Go to the [Releases Tab](https://github.com/NoOneIsHereFr/ProcessSigma/releases)
-2. Download the ´´´prcsigma.exe´´´ file
+2. Download the ´prcsigma.exe´ file
 3. done
 
 [^1]: i hope you should know what python is. Used libs are: pystray, PIL, psutil, os, time, threading, keyboard, win32
