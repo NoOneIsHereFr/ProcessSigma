@@ -1,4 +1,4 @@
-#imports
+# Imports
 from pystray import Icon, MenuItem, Menu
 from PIL import Image, ImageDraw
 import psutil
@@ -10,9 +10,12 @@ import win32gui
 import win32process
 import win32ui
 
-#var
+# Variables
+menu_states = {
+    "Autostart": False,
+}
 
-#Functions
+# Functions
 def get_pid():
     window = win32gui.GetForegroundWindow()
     _, pid = win32process.GetWindowThreadProcessId(window)
@@ -47,16 +50,32 @@ def tImg(w, h, c1, c2):
     )
     return img
 
+def toggle_Autostart(icon, item):
+    menu_states["Autostart"] = not menu_states["Autostart"]
+    print(f"Autostart state: {menu_states['Autostart']}")
+    #TODO: autostart logik
+
 def tStart():
     def tExit(icon, item):
+        print("STOPPING")
         icon.stop()
 
     img = tImg(64, 64, "black", "red")
-    menu = Menu(MenuItem("Exit", tExit))
-    icon = Icon("Process Sigma v0.1a", img, "Process Sigma v0.1a", menu)
+
+    menu = Menu(
+        MenuItem(
+            "Autostart",
+            toggle_Autostart,
+            checked=lambda item: menu_states["Autostart"],
+        ),
+        Menu.SEPARATOR,
+        MenuItem("Exit", tExit),
+    )
+
+    icon = Icon("Process Sigma v0.2b", img, "Process Sigma v0.2b", menu)
     icon.run()
 
-#Main
+# Main function
 def main():
     print("RUNNING")
     hotkey_thread = threading.Thread(target=listen_key, daemon=True)
