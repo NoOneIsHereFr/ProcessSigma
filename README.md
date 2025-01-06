@@ -16,5 +16,5 @@
 3. Run this: `pyinstaller --noconfirm --onefile --windowed --icon "sigmaprc.ico" main.py`. If not working enter the full path of pyinstaller
 4. Run this: `move ./dist/main.exe ./`
 
-[^1]: i hope you should know what python is. Used libs are: pystray, PIL, psutil, os, time, threading, keyboard, win32
+[^1]: i hope you should know what python is
 [^2]: just some lil brainrot
