@@ -1,11 +1,14 @@
 #include <windows.h>
 #include "../h/autostart.h"
 #include "../h/verbose.h"
+#include "../h/update.h"
 
 #define WM_TRAYICON (WM_USER + 1)
 
 NOTIFYICONDATA nid;
 HMENU hMenu;
+
+float version = 0.4;
 
 void ToggleAutostart() {
     BOOL isChecked = GetMenuState(hMenu, 1, MF_BYCOMMAND) & MF_CHECKED;
@@ -38,7 +41,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 case 1: // Autostart checkbox
                     ToggleAutostart();
                     break;
-                case 2: // Quit button
+                case 2: // Check for updates button
+                    verbosemsg("Checking for updates", "inf");
+                    bool avalible = check_for_update(&version);
+                    if (avalible == TRUE) {
+                        verbosemsg("Update available", "suc");
+                        system("start https://github.com/NoOneIsHereFr/ProcessSigma/releases");
+                    } else {
+                        verbosemsg("No updates available", "inf");
+                    }
+                    break;
+                    
+                case 3: // Quit button
                     Shell_NotifyIcon(NIM_DELETE, &nid);
                     PostQuitMessage(0);
                     verbosemsg("Quitting", "inf");
@@ -75,7 +89,8 @@ void CreateTrayIcon(HWND hwnd, BOOL autostartState) {
     verbosemsg("Made tray icon", "inf");
     hMenu = CreatePopupMenu();
     AppendMenu(hMenu, MF_STRING | (autostartEnabled ? MF_CHECKED : 0), 1, TEXT("Autostart"));
-    AppendMenu(hMenu, MF_STRING, 2, TEXT("Quit"));
+    AppendMenu(hMenu, MF_STRING, 2, TEXT("Check for Updates"));
+    AppendMenu(hMenu, MF_STRING, 3, TEXT("Quit"));
 }
 
 int startT(HINSTANCE hInstance, bool autostartstatus) {
@@ -101,4 +116,3 @@ int startT(HINSTANCE hInstance, bool autostartstatus) {
 
     return 0;
 }
-

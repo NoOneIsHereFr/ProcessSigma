@@ -28,13 +28,32 @@
 unsigned __stdcall hotkey_thread(void *arg);
 
 int main() {
+    HANDLE hMutex = CreateMutex(NULL, TRUE, "Global\\PROCCESSSIGMA_Mutex");
+    if (hMutex == NULL) {
+        verbosemsg("Failed to create mutex", "err");
+        return 1;
+    }
+
+    if (GetLastError() == ERROR_ALREADY_EXISTS) {
+        verbosemsg("Another instance is already running", "err");
+        CloseHandle(hMutex);
+        return 1;
+    }
+    
+    if (!AttachConsole(ATTACH_PARENT_PROCESS)) {
+        HWND hwnd = GetConsoleWindow();
+        if (hwnd != NULL) {
+            ShowWindow(hwnd, SW_HIDE);
+        }
+    }
+    
     #ifdef _WIN32
         verbosemsg("Windows: Supported", "suc");
     #else
         verbosemsg("Unix (likley): Not Supported", "err");
         return 1;
     #endif
-
+    
     verbosemsg("Starting thread", "inf");
 
     verbosemsg("Checking Autostart status", "inf");
@@ -48,7 +67,6 @@ int main() {
         verbosemsg("Autostart: DISABLED", "war");
     }
 
-    // Start the hotkey detection thread
     HANDLE thread_handle;
     thread_handle = (HANDLE)_beginthreadex(NULL, 0, hotkey_thread, NULL, 0, NULL);
     if (thread_handle == 0) {
@@ -56,11 +74,9 @@ int main() {
         return 1;
     }
 
-    // Run the tray icon logic (optional)
     HINSTANCE hInstance = GetModuleHandle(NULL);
     startT(hInstance, autostart_status);
 
-    // Wait for the hotkey thread to finish (it won't unless the program exits)
     WaitForSingleObject(thread_handle, INFINITE);
 
     CloseHandle(thread_handle);
@@ -80,6 +96,5 @@ unsigned __stdcall hotkey_thread(void *arg) {
         }
         Sleep(100);
     }
-
     return 0;
 }

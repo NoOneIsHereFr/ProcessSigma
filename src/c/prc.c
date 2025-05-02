@@ -8,13 +8,13 @@
 int getPID() {
     HWND window = GetForegroundWindow();
     if (window == NULL) {
-        verbosemsg("Error: No foreground window.\n", "err");
+        verbosemsg("Error: No foreground window.", "err");
         return -1;
     }
     DWORD pid = 0;
     GetWindowThreadProcessId(window, &pid);
     if (pid == 0) {
-        verbosemsg("Error: No process ID found for the foreground window.\n", "err");
+        verbosemsg("Error: No process ID found for the foreground window", "err");
         return -1;
     }
     verbosemsg("PID found", "suc");
@@ -28,11 +28,11 @@ int killPID() {
     }
     HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
     if (hProcess == NULL) {
-        verbosemsg("Error: Unable to open process for termination.\n", "err");
+        verbosemsg("Error: Unable to open process for termination", "err");
         return -1;
     }
     if (TerminateProcess(hProcess, 0) == 0) {
-        verbosemsg("Error: Unable to terminate process.\n", "err");
+        verbosemsg("Error: Unable to terminate process", "err");
         CloseHandle(hProcess);
         return -1;
     }
