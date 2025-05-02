@@ -2,6 +2,8 @@
 *THE BETTER ALT+F4*
 ----------------------------------------------
 > Made in C
+
+
 It does the same as Alt+F4...but better
 
 ## PRE-COMPILED EXE FOR WINDOWS (NO UNIX/LIKE SUPPORT):
