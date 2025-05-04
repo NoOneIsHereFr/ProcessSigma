@@ -4,7 +4,7 @@
 #include <wchar.h>
 #include <shlobj.h>
 
-int IsInStarup() {
+int IsInStartup() {
     wchar_t appdata[MAX_PATH];
     wchar_t startup_folder[MAX_PATH];
     wchar_t exe_path[MAX_PATH];
@@ -16,15 +16,13 @@ int IsInStarup() {
         return -1;
     }
     verbosemsg("AppData folder retrieved successfully", "suc");
-    wprintf(L"AppData folder: '%s'\n", appdata);
 
-    if (swprintf(startup_folder, MAX_PATH, L"%s\\Microsoft\\Windows\\Start Menu\\Programs\\Startup", appdata) < 0) {
-        verbosemsg("Failed to construct Startup folder path", "err");
+    if (swprintf(startup_folder, MAX_PATH, L"%s\\Microsoft\\Windows\\Start Menu\\Programs\\Startup", appdata) >= MAX_PATH) {
+        verbosemsg("Startup folder path too long", "err");
         return -1;
     }
 
     verbosemsg("Searching Startup folder", "inf");
-    wprintf(L"Startup folder: '%s'\n", startup_folder);
 
     if (GetFileAttributesW(startup_folder) == INVALID_FILE_ATTRIBUTES) {
         verbosemsg("Startup folder does not exist", "err");
@@ -46,7 +44,7 @@ int IsInStarup() {
 }
 
 void toggle_autostart() {
-    int status = IsInStarup();
+    int status = IsInStartup();
     if (status == 1) {
         verbosemsg("Disabling Autostart", "inf");
         remove_from_startup();
@@ -74,8 +72,8 @@ void copy_to_startup() {
     wprintf(L"AppData folder: '%s'\n", appdata);
 
     // Construct the Startup folder path
-    if (swprintf(startup_folder, MAX_PATH, L"%s\\Microsoft\\Windows\\Start Menu\\Programs\\Startup", appdata) < 0) {
-        verbosemsg("Failed to construct Startup folder path", "err");
+    if (swprintf(startup_folder, MAX_PATH, L"%s\\Microsoft\\Windows\\Start Menu\\Programs\\Startup", appdata) >= MAX_PATH) {
+        verbosemsg("Startup folder path too long", "err");
         return;
     }
 
@@ -111,8 +109,8 @@ void remove_from_startup() {
     wprintf(L"AppData folder: '%s'\n", appdata);
 
     // Construct the Startup folder path
-    if (swprintf(startup_folder, MAX_PATH, L"%s\\Microsoft\\Windows\\Start Menu\\Programs\\Startup", appdata) < 0) {
-        verbosemsg("Failed to construct Startup folder path", "err");
+    if (swprintf(startup_folder, MAX_PATH, L"%s\\Microsoft\\Windows\\Start Menu\\Programs\\Startup", appdata) >= MAX_PATH) {
+        verbosemsg("Startup folder path too long", "err");
         return;
     }
 

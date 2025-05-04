@@ -57,10 +57,10 @@ int main() {
     verbosemsg("Starting thread", "inf");
 
     verbosemsg("Checking Autostart status", "inf");
-    int autostart_status = IsInStarup();
+    int autostart_status = IsInStartup();
     if (autostart_status == -1) {
         verbosemsg("Autostart: ERROR; Quitting", "err");
-        exit(1);
+        exit(0);
     } else if (autostart_status == 1) {
         verbosemsg("Autostart: ENABLED", "suc");
     } else {
@@ -78,8 +78,8 @@ int main() {
     startT(hInstance, autostart_status);
 
     WaitForSingleObject(thread_handle, INFINITE);
-
     CloseHandle(thread_handle);
+    
     verbosemsg("Thread creation finished", "suc");
 
     return 0;
@@ -89,8 +89,12 @@ unsigned __stdcall hotkey_thread(void *arg) {
     verbosemsg("Hotkey thread started", "suc");
     while (1) {
         verbosemsg("Listening for hotkeys", "inf");
-        if (GetAsyncKeyState(VK_F5) & 0x8000) {
-            verbosemsg("Alt F5 pressed", "suc");
+        SHORT state = GetAsyncKeyState(VK_F5);
+        char buf[100];
+        sprintf(buf, "Key state: 0x%X", state);
+        verbosemsg(buf, "inf");
+        if (state & 0x8000) {
+            verbosemsg("F5 pressed", "suc");
             killPID();
             Sleep(1000);
         }

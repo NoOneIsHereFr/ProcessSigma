@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 
+int IsInStartup();
 void toggle_autostart();
 void copy_to_startup();
 void remove_from_startup();

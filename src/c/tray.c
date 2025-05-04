@@ -2,13 +2,15 @@
 #include "../h/autostart.h"
 #include "../h/verbose.h"
 #include "../h/update.h"
+#include "../h/main.h"
+#include <tchar.h>
 
 #define WM_TRAYICON (WM_USER + 1)
 
 NOTIFYICONDATA nid;
 HMENU hMenu;
 
-float version = 0.5;
+float version = 0.6;
 
 void ToggleAutostart() {
     BOOL isChecked = GetMenuState(hMenu, 1, MF_BYCOMMAND) & MF_CHECKED;
@@ -32,10 +34,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     verbosemsg("WindowProc", "inf");
     switch (uMsg) {
         case WM_TRAYICON:
-            if (lParam == WM_RBUTTONDOWN || lParam == WM_LBUTTONDOWN) {
-                ShowContextMenu(hwnd);
+            if (lParam == WM_RBUTTONUP) {
+                POINT pt;
+                GetCursorPos(&pt);
+                SetForegroundWindow(hwnd);
+                TrackPopupMenu(hMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN, pt.x, pt.y, 0, hwnd, NULL);
             }
             break;
+            
         case WM_COMMAND:
             switch (LOWORD(wParam)) {
                 case 1: // Autostart checkbox
@@ -53,25 +59,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     break;
                     
                 case 3: // Quit button
-                    Shell_NotifyIcon(NIM_DELETE, &nid);
-                    PostQuitMessage(0);
                     verbosemsg("Quitting", "inf");
-                    verbosemsg("Cleanup done", "suc");
-                    exit(0);
+                    DestroyWindow(hwnd);
                     break;
             }
             break;
+            
         case WM_DESTROY:
             Shell_NotifyIcon(NIM_DELETE, &nid);
             PostQuitMessage(0);
-            verbosemsg("Quitting", "inf");
-            verbosemsg("Cleanup done", "suc");
-            exit(0);
-            break;
-        default:
-            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+            return 0;
     }
-    return 0;
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 void CreateTrayIcon(HWND hwnd, BOOL autostartState) {
@@ -89,7 +88,11 @@ void CreateTrayIcon(HWND hwnd, BOOL autostartState) {
     verbosemsg("Made tray icon", "inf");
     hMenu = CreatePopupMenu();
     AppendMenu(hMenu, MF_STRING | (autostartEnabled ? MF_CHECKED : 0), 1, TEXT("Autostart"));
-    AppendMenu(hMenu, MF_STRING, 2, TEXT("Check for Updates"));
+    
+    TCHAR buffer[256];
+    _stprintf(buffer, TEXT("Check for Updates // %s"), conFiS(version));
+    AppendMenu(hMenu, MF_STRING, 2, buffer);
+    
     AppendMenu(hMenu, MF_STRING, 3, TEXT("Quit"));
 }
 
@@ -103,15 +106,17 @@ int startT(HINSTANCE hInstance, bool autostartstatus) {
 
     HWND hwnd = CreateWindowEx(0, wc.lpszClassName, TEXT("PrcSigma"), 0, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
 
+    if (!hwnd) {
+        verbosemsg("Failed to create window", "err");
+        return -1;
+    }
+
     CreateTrayIcon(hwnd, autostartstatus);
 
     MSG msg;
-    while (TRUE) {
-        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-        Sleep(100);
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
     }
 
     return 0;
