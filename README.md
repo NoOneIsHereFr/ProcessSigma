@@ -1,4 +1,4 @@
-# **ProcessSigma**
+# **ThreadAssassin**
 *THE BETTER ALT+F4*
 ----------------------------------------------
 > Made in C
