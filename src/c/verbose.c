@@ -5,13 +5,15 @@
 
 int verbosemsg(char *msg, char *type) {
     if (strcmp(type, "err") == 0) {
-        printf("|||< %s%s%s\n", RED, msg, NRM);
+        printf("||| < %s%s%s\n", RED, msg, NRM);
     } else if (strcmp(type, "inf") == 0) {
-        printf("||| %s%s%s\n", WHT, msg, NRM);
+        printf("|||   %s%s%s\n", WHT, msg, NRM);
+    } else if (strcmp(type, "infs") == 0) {
+        printf("||| - %s%s%s\n", BLU, msg, NRM);
     } else if (strcmp(type, "war") == 0) {
-        printf("||| %s%s%s\n", YEL, msg, NRM);
+        printf("|||   %s%s%s\n", YEL, msg, NRM);
     } else if (strcmp(type, "suc") == 0) {
-        printf("|||> %s%s%s\n", GRN, msg, NRM);
+        printf("||| > %s%s%s\n", GRN, msg, NRM);
     }
     return 0;
 }

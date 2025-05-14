@@ -10,7 +10,7 @@
 NOTIFYICONDATA nid;
 HMENU hMenu;
 
-float version = 0.6;
+float version = 0.7;
 
 void ToggleAutostart() {
     BOOL isChecked = GetMenuState(hMenu, 1, MF_BYCOMMAND) & MF_CHECKED;
@@ -31,7 +31,6 @@ void ShowContextMenu(HWND hwnd) {
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    verbosemsg("WindowProc", "inf");
     switch (uMsg) {
         case WM_TRAYICON:
             if (lParam == WM_RBUTTONUP) {
@@ -48,18 +47,18 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                     ToggleAutostart();
                     break;
                 case 2: // Check for updates button
-                    verbosemsg("Checking for updates", "inf");
+                    verbosemsg("Checking for updates", "infs");
                     bool avalible = check_for_update(&version);
                     if (avalible == TRUE) {
                         verbosemsg("Update available", "suc");
                         system("start https://github.com/NoOneIsHereFr/ProcessSigma/releases");
                     } else {
-                        verbosemsg("No updates available", "inf");
+                        verbosemsg("No updates available", "suc");
                     }
                     break;
                     
                 case 3: // Quit button
-                    verbosemsg("Quitting", "inf");
+                    verbosemsg("Quitting", "war");
                     DestroyWindow(hwnd);
                     break;
             }
@@ -74,7 +73,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 }
 
 void CreateTrayIcon(HWND hwnd, BOOL autostartState) {
-    verbosemsg("Making tray icon", "inf");
+    verbosemsg("Making tray icon", "infs");
     bool autostartEnabled = autostartState;
     nid.cbSize = sizeof(NOTIFYICONDATA);
     nid.hWnd = hwnd;
@@ -82,15 +81,15 @@ void CreateTrayIcon(HWND hwnd, BOOL autostartState) {
     nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
     nid.uCallbackMessage = WM_TRAYICON;
     nid.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-    lstrcpy(nid.szTip, TEXT("PrcSigma"));
+    lstrcpy(nid.szTip, TEXT("ThreadAssassin"));
     Shell_NotifyIcon(NIM_ADD, &nid);
 
-    verbosemsg("Made tray icon", "inf");
+    verbosemsg("Made tray icon", "suc");
     hMenu = CreatePopupMenu();
     AppendMenu(hMenu, MF_STRING | (autostartEnabled ? MF_CHECKED : 0), 1, TEXT("Autostart"));
     
     TCHAR buffer[256];
-    _stprintf(buffer, TEXT("Check for Updates // %s"), conFiS(version));
+    _stprintf(buffer, TEXT("Check for Updates // %.1f"), version);
     AppendMenu(hMenu, MF_STRING, 2, buffer);
     
     AppendMenu(hMenu, MF_STRING, 3, TEXT("Quit"));
@@ -104,7 +103,7 @@ int startT(HINSTANCE hInstance, bool autostartstatus) {
 
     RegisterClass(&wc);
 
-    HWND hwnd = CreateWindowEx(0, wc.lpszClassName, TEXT("PrcSigma"), 0, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
+    HWND hwnd = CreateWindowEx(0, wc.lpszClassName, TEXT("ThreadAssassin"), 0, 0, 0, 0, 0, NULL, NULL, hInstance, NULL);
 
     if (!hwnd) {
         verbosemsg("Failed to create window", "err");

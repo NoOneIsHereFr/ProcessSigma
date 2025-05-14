@@ -3,14 +3,13 @@
 #include <stdbool.h>
 
 char *conFiS(float fInput) {
-    char buffer[50];
+    static char buffer[50];
     snprintf(buffer, sizeof(buffer), "%.2f", fInput);
     return buffer;
 }
 
 char *conFiI(int iInput) {
-    char buffer[50];
+    static char buffer[50];
     snprintf(buffer, sizeof(buffer), "%d", iInput);
     return buffer;
 }
-

