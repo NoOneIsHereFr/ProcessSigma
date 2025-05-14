@@ -8,7 +8,7 @@ It does the same as Alt+F4...but better
 
 ## PRE-COMPILED EXE FOR WINDOWS (NO UNIX/LIKE SUPPORT):
 1. Go to the [Releases Tab](https://github.com/NoOneIsHereFr/ProcessSigma/releases)
-2. Download the `prcsigma.exe` file
+2. Download the `trdasn.exe` file
 3. Done👍
 
 ## COMPILE YOURSELF:
