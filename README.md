@@ -14,6 +14,6 @@ It does the same as Alt+F4...but better
 ## COMPILE YOURSELF:
 1. Clone this repo
 2. Navigate to the root directory of the repo
-3. Run the VS22 Developer CMD/PWSH
+3. Run the VS22 Developer CMD/PWSH; I used VS22 ones so those work for sure
 4. Run `make`
 5. Done👍
