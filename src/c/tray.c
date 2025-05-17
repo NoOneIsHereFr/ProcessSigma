@@ -60,6 +60,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
                 case 3: // Quit button
                     verbosemsg("Quitting", "war");
                     DestroyWindow(hwnd);
+                    htQUIT = TRUE;
                     break;
             }
             break;
@@ -84,15 +85,19 @@ void CreateTrayIcon(HWND hwnd, BOOL autostartState) {
     lstrcpy(nid.szTip, TEXT("ThreadAssassin"));
     Shell_NotifyIcon(NIM_ADD, &nid);
 
-    verbosemsg("Made tray icon", "suc");
     hMenu = CreatePopupMenu();
     AppendMenu(hMenu, MF_STRING | (autostartEnabled ? MF_CHECKED : 0), 1, TEXT("Autostart"));
+    verbosemsg("Made tray icon", "suc");
     
     TCHAR buffer[256];
+    verbosemsg("Making update button", "infs");
     _stprintf(buffer, TEXT("Check for Updates // %.1f"), version);
     AppendMenu(hMenu, MF_STRING, 2, buffer);
     
+    verbosemsg("Made update button", "suc");
+    verbosemsg("Making quit button", "infs");
     AppendMenu(hMenu, MF_STRING, 3, TEXT("Quit"));
+    verbosemsg("Made quit button", "suc");
 }
 
 int startT(HINSTANCE hInstance, bool autostartstatus) {
@@ -112,10 +117,15 @@ int startT(HINSTANCE hInstance, bool autostartstatus) {
 
     CreateTrayIcon(hwnd, autostartstatus);
 
+    verbosemsg("Tray icon created", "suc");
     MSG msg;
+    verbosemsg("Entering message loop", "infs");
     while (GetMessage(&msg, NULL, 0, 0)) {
+        verbosemsg("Message loop running", "suc");
         TranslateMessage(&msg);
+        verbosemsg("Translating message", "suc");
         DispatchMessage(&msg);
+        verbosemsg("Dispatching message", "suc");
     }
 
     return 0;

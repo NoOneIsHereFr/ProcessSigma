@@ -20,12 +20,29 @@
 #include "../h/autostart.h"
 #include "../h/verbose.h"
 #include "../h/prc.h"
+#include "../h/main.h"
 
 // hotkey_thread function prototype
 // The reason for this function is to create an own therad to listen for hotkeys. why this is not done in the main thread is because the main thread is blocked by the wait function.
 unsigned __stdcall hotkey_thread(void *arg);
 
+bool htQUIT = FALSE;
+
+char *conFiS(float fInput) {
+    static char buffer[50];
+    snprintf(buffer, sizeof(buffer), "%.2f", fInput);
+    return buffer;
+}
+
+char *conFiI(int iInput) {
+    static char buffer[50];
+    snprintf(buffer, sizeof(buffer), "%d", iInput);
+    return buffer;
+}
+
 int main() {
+    system("title THREADASSASSIN");
+    system("cls");
     // Mutex to prevent multiple instances of the program
     verbosemsg("Creating mutex", "inf");
     HANDLE hMutex = CreateMutex(NULL, TRUE, "Global\\THREADASSASSIN_Mutex");
@@ -57,16 +74,6 @@ int main() {
         return 1;
     #endif
     
-    verbosemsg("Starting thread", "inf");
-    
-    // Thread creation
-    HANDLE thread_handle;
-    thread_handle = (HANDLE)_beginthreadex(NULL, 0, hotkey_thread, NULL, 0, NULL);
-    if (thread_handle == 0) {
-        verbosemsg("Failed to create thread", "err");
-        return 1;
-    }
-
     // Autostart check
     verbosemsg("Checking Autostart status", "inf");
     int autostart_status = IsInStartup();
@@ -78,39 +85,53 @@ int main() {
     } else {
         verbosemsg("Autostart: DISABLED", "war");
     }
-
-    // Starting actual instance
-    verbosemsg("Thread creation finished", "suc");
-    HINSTANCE hInstance = GetModuleHandle(NULL);
-    startT(hInstance, autostart_status);
-
-    WaitForSingleObject(thread_handle, INFINITE);
-    CloseHandle(thread_handle);
     
+    HINSTANCE hInstance = GetModuleHandle(NULL);
+
+    // Thread creation
+    verbosemsg("Starting thread", "inf");
+    HANDLE thread_handle = (HANDLE)_beginthreadex(NULL, 0, hotkey_thread, NULL, 0, NULL);
+
+    if (thread_handle != 0) {
+        // Start tray (blocks until exit)
+        startT(hInstance, autostart_status);
+
+        WaitForSingleObject(thread_handle, INFINITE);
+        CloseHandle(thread_handle);
+
+        verbosemsg("Thread creation finished", "suc");
+    } else if (thread_handle == NULL) {
+        verbosemsg("Thread creation failed", "err");
+        CloseHandle(thread_handle);
+        return 1;
+    }
+    
+    CloseHandle(hMutex);
     return 0;
 }
 
 unsigned __stdcall hotkey_thread(void *arg) {
-        verbosemsg("Hotkey thread started", "suc");
-        while (1) {
+    verbosemsg("Hotkey thread started", "suc");
+    int pressed = 0;
+    int counter = 0;
+    while (htQUIT == FALSE) {
+        if (counter++ % 100 == 0) { // Print every ~1s (100*10ms)
             verbosemsg("Listening for hotkeys", "inf");
-            // Check if Alt + F5 is pressed
-            SHORT altState = GetAsyncKeyState(VK_MENU);
-            SHORT f5State = GetAsyncKeyState(VK_F5);
-            SHORT crtlState = GetAsyncKeyState(VK_CONTROL);
-            
-            if ((altState & 0x8000) && (f5State & 0x8000)) {
-                // Check if Ctrl is also pressed
-                if (crtlState & 0x8000) {
-                    verbosemsg("Ctrl + Alt + F5 pressed", "suc");
-                    killPID();
-                } else {
-                verbosemsg("Alt + F5 pressed", "suc");
+        }
+        SHORT altState = GetAsyncKeyState(VK_MENU);
+        SHORT f5State = GetAsyncKeyState(VK_F5);
+        
+        if ((altState & 0x8000) && (f5State & 0x8000)) {
+            if (!pressed) {
+                pressed = 1;
+                verbosemsg("Terminating", "suc");
                 killPID();
                 Sleep(1000);
             }
-            Sleep(10);
+        } else {
+            pressed = 0;
         }
-        return 0;
+        Sleep(10);
     }
+    return 0;
 }

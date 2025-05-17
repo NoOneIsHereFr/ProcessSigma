@@ -1,3 +1,10 @@
+/*
+Ts code was entireley written by ChatGPT
+Cuz I had no fucking clue how to do ts updating typeshit
+Ts code is part of da ThreadAssassin project
+Thx GPT
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
@@ -29,7 +36,7 @@ int check_for_update(float *version) {
         return 0;
     }
 
-    hRequest = WinHttpOpenRequest(hConnect, L"GET", L"/NoOneIsHereFr/ProcessSigma/refs/heads/main/version", NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_SECURE);
+    hRequest = WinHttpOpenRequest(hConnect, L"GET", L"/NoOneIsHereFr/ThreadAssassin/refs/heads/main/version", NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, WINHTTP_FLAG_SECURE);
     if (!hRequest) {
         fprintf(stderr, "WinHttpOpenRequest failed\n");
         WinHttpCloseHandle(hConnect);
