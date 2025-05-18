@@ -11,7 +11,7 @@
 NOTIFYICONDATA nid;
 HMENU hMenu;
 
-float version = 0.7;
+float version = 0.8;
 
 void ToggleAutostart() {
     BOOL isChecked = GetMenuState(hMenu, 1, MF_BYCOMMAND) & MF_CHECKED;
