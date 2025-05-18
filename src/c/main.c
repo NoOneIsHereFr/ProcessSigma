@@ -21,6 +21,7 @@
 #include "../h/verbose.h"
 #include "../h/prc.h"
 #include "../h/main.h"
+#include "../h/tray.h"
 
 // hotkey_thread function prototype
 // The reason for this function is to create an own therad to listen for hotkeys. why this is not done in the main thread is because the main thread is blocked by the wait function.
@@ -90,20 +91,11 @@ int main() {
 
     // Thread creation
     verbosemsg("Starting thread", "inf");
-    HANDLE thread_handle = (HANDLE)_beginthreadex(NULL, 0, hotkey_thread, NULL, 0, NULL);
-
-    if (thread_handle != 0) {
+    if (1) { // always true, just to keep the structure
         // Start tray (blocks until exit)
         startT(hInstance, autostart_status);
 
-        WaitForSingleObject(thread_handle, INFINITE);
-        CloseHandle(thread_handle);
-
         verbosemsg("Thread creation finished", "suc");
-    } else if (thread_handle == NULL) {
-        verbosemsg("Thread creation failed", "err");
-        CloseHandle(thread_handle);
-        return 1;
     }
     
     CloseHandle(hMutex);

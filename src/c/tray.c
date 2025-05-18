@@ -4,6 +4,7 @@
 #include "../h/update.h"
 #include "../h/main.h"
 #include <tchar.h>
+#include <process.h>
 
 #define WM_TRAYICON (WM_USER + 1)
 
@@ -73,6 +74,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+extern unsigned __stdcall hotkey_thread(void *arg);
+extern bool htQUIT;
+
 void CreateTrayIcon(HWND hwnd, BOOL autostartState) {
     verbosemsg("Making tray icon", "infs");
     bool autostartEnabled = autostartState;
@@ -84,6 +88,12 @@ void CreateTrayIcon(HWND hwnd, BOOL autostartState) {
     nid.hIcon = LoadIcon(NULL, IDI_APPLICATION);
     lstrcpy(nid.szTip, TEXT("ThreadAssassin"));
     Shell_NotifyIcon(NIM_ADD, &nid);
+
+    // Start hotkey thread here, after tray icon is created
+    static HANDLE thread_handle = NULL;
+    if (!thread_handle) {
+        thread_handle = (HANDLE)_beginthreadex(NULL, 0, hotkey_thread, NULL, 0, NULL);
+    }
 
     hMenu = CreatePopupMenu();
     AppendMenu(hMenu, MF_STRING | (autostartEnabled ? MF_CHECKED : 0), 1, TEXT("Autostart"));
