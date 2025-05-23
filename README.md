@@ -1,11 +1,5 @@
 # **ThreadAssassin**
-*THE BETTER ALT+F4*
 ----------------------------------------------
-> Made in C
-
-
-It does the same as Alt+F4...but better
-
 ## COMPILED EXE FOR WINDOWS (NO UNIX/LIKE SUPPORT):
 1. Go to the [Releases Tab](https://github.com/NoOneIsHereFr/ProcessSigma/releases)
 2. Download the `trdasn.exe` file
